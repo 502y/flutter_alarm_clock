@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_alarm_clock/app/data/data.dart';
-import 'package:flutter_alarm_clock/app/data/enums.dart';
-import 'package:flutter_alarm_clock/app/data/models/menu_info.dart';
-import 'package:flutter_alarm_clock/app/data/theme_data.dart';
-import 'package:flutter_alarm_clock/app/modules/views/alarm_page.dart';
-import 'package:flutter_alarm_clock/app/modules/views/clock_page.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/data.dart';
+import '../../data/enums.dart';
+import '../../data/models/menu_info.dart';
+import '../../data/theme_data.dart';
+import 'alarm_page.dart';
+import 'clock_page.dart';
+
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +24,9 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: menuItems.map((currentMenuInfo) => buildMenuButton(currentMenuInfo)).toList(),
+            children: menuItems
+                .map((currentMenuInfo) => buildMenuButton(currentMenuInfo))
+                .toList(),
           ),
           VerticalDivider(
             color: CustomColors.dividerColor,
@@ -30,25 +35,24 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Consumer<MenuInfo>(
               builder: (BuildContext context, MenuInfo value, Widget? child) {
-                if (value.menuType == MenuType.clock)
-                  return ClockPage();
-                else if (value.menuType == MenuType.alarm)
-                  return AlarmPage();
-                else
-                  return Container(
-                    child: RichText(
-                      text: TextSpan(
-                        style: TextStyle(fontSize: 20),
-                        children: <TextSpan>[
-                          TextSpan(text: 'Upcoming Tutorial\n'),
-                          TextSpan(
-                            text: value.title,
-                            style: TextStyle(fontSize: 48),
-                          ),
-                        ],
-                      ),
+                if (value.menuType == MenuType.clock) {
+                  return const ClockPage();
+                } else if (value.menuType == MenuType.alarm) {
+                  return const AlarmPage();
+                } else {
+                  return RichText(
+                    text: TextSpan(
+                      style: const TextStyle(fontSize: 20),
+                      children: <TextSpan>[
+                        const TextSpan(text: 'Upcoming Tutorial\n'),
+                        TextSpan(
+                          text: value.title,
+                          style: const TextStyle(fontSize: 48),
+                        ),
+                      ],
                     ),
                   );
+                }
               },
             ),
           ),
@@ -61,9 +65,12 @@ class _HomePageState extends State<HomePage> {
     return Consumer<MenuInfo>(
       builder: (BuildContext context, MenuInfo value, Widget? child) {
         return MaterialButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(32))),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(32))),
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0),
-          color: currentMenuInfo.menuType == value.menuType ? CustomColors.menuBackgroundColor : CustomColors.pageBackgroundColor,
+          color: currentMenuInfo.menuType == value.menuType
+              ? CustomColors.menuBackgroundColor
+              : CustomColors.pageBackgroundColor,
           onPressed: () {
             var menuInfo = Provider.of<MenuInfo>(context, listen: false);
             menuInfo.updateMenu(currentMenuInfo);
@@ -74,10 +81,13 @@ class _HomePageState extends State<HomePage> {
                 currentMenuInfo.imageSource!,
                 scale: 1.5,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 currentMenuInfo.title ?? '',
-                style: TextStyle(fontFamily: 'avenir', color: CustomColors.primaryTextColor, fontSize: 14),
+                style: TextStyle(
+                    fontFamily: 'avenir',
+                    color: CustomColors.primaryTextColor,
+                    fontSize: 14),
               ),
             ],
           ),

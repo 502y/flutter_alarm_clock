@@ -1,12 +1,13 @@
-import 'package:flutter_alarm_clock/app/data/models/alarm_info.dart';
 import 'package:sqflite/sqflite.dart';
 
-final String tableAlarm = 'alarm';
-final String columnId = 'id';
-final String columnTitle = 'title';
-final String columnDateTime = 'alarmDateTime';
-final String columnPending = 'isPending';
-final String columnColorIndex = 'gradientColorIndex';
+import 'app/data/models/alarm_info.dart';
+
+const String tableAlarm = 'alarm';
+const String columnId = 'id';
+const String columnTitle = 'title';
+const String columnDateTime = 'alarmDateTime';
+const String columnPending = 'isPending';
+const String columnColorIndex = 'gradientColorIndex';
 
 class AlarmHelper {
   static Database? _database;
@@ -14,22 +15,18 @@ class AlarmHelper {
 
   AlarmHelper._createInstance();
   factory AlarmHelper() {
-    if (_alarmHelper == null) {
-      _alarmHelper = AlarmHelper._createInstance();
-    }
+    _alarmHelper ??= AlarmHelper._createInstance();
     return _alarmHelper!;
   }
 
   Future<Database> get database async {
-    if (_database == null) {
-      _database = await initializeDatabase();
-    }
+    _database ??= await initializeDatabase();
     return _database!;
   }
 
   Future<Database> initializeDatabase() async {
     var dir = await getDatabasesPath();
-    var path = dir + "alarm.db";
+    var path = "${dir}alarm.db";
 
     var database = await openDatabase(
       path,
@@ -49,26 +46,26 @@ class AlarmHelper {
   }
 
   void insertAlarm(AlarmInfo alarmInfo) async {
-    var db = await this.database;
+    var db = await database;
     var result = await db.insert(tableAlarm, alarmInfo.toMap());
     print('result : $result');
   }
 
   Future<List<AlarmInfo>> getAlarms() async {
-    List<AlarmInfo> _alarms = [];
+    List<AlarmInfo> alarms = [];
 
-    var db = await this.database;
+    var db = await database;
     var result = await db.query(tableAlarm);
-    result.forEach((element) {
+    for (var element in result) {
       var alarmInfo = AlarmInfo.fromMap(element);
-      _alarms.add(alarmInfo);
-    });
+      alarms.add(alarmInfo);
+    }
 
-    return _alarms;
+    return alarms;
   }
 
   Future<int> delete(int? id) async {
-    var db = await this.database;
+    var db = await database;
     return await db.delete(tableAlarm, where: '$columnId = ?', whereArgs: [id]);
   }
 }

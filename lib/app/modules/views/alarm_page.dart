@@ -47,7 +47,7 @@ class AlarmPageState extends State<AlarmPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Alarm',
+            '闹钟',
             style: TextStyle(
                 fontFamily: 'avenir',
                 fontWeight: FontWeight.w700,
